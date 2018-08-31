@@ -1,0 +1,16 @@
+#login-section {
+    background: url('../img/login_wallpaper.jpg')no-repeat center center scroll;
+    background-size:cover;
+}
+.lvjing {
+    background-color: rgba(66,66,78,0.5);
+}
+.card {
+    margin-top: 200px;
+    margin-bottom: 280px;
+
+    background-color: rgba(227, 227, 227, 0.8);
+}
+input.float-right {
+    margin-top: 10px;
+}
