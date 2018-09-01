@@ -6,29 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="{% static 'bootstrap-4.0.0-dist/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
-    <title>登录系统</title>
+    <title>系统首页</title>
 </head>
 <body>
     <section id="index-title">
-        <nav class="navbar navbar-expand-lg navbar-light bg-info">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-                <a class="navbar-brand" href="{% url 'index' %}">资产管理系统</a>
+                <a class="navbar-brand pl-2" href="{% url 'index' %}">资产管理系统</a>
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'index' %}">主页 <span class="sr-only">(current)</span></a>
-                    </li>
+
                 </ul>
                 <ul class="navbar-nav mt-2 mt-lg-0">
                     {% if user.is_authenticated %}
-                           <li class="nav-item active">
-                                <a class="nav-link" href="">{{ user.get_nickname }} <span class="sr-only">(current)</span></a>
-                            </li>
-                            <li class="nav-item active">
-                                <a class="nav-link" href="{% url 'user:logout' %}">退出 <span class="sr-only">(current)</span></a>
-                            </li>
+                        <li class="nav-item active dropdown mr-2">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ user.get_nickname }}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                {% if user.is_staff %}
+                                    <a class="dropdown-item" href="{% url 'admin:index' %}">后台管理</a>
+                                {% endif %}
+                            </div>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link pr-2" href="{% url 'user:logout' %}">退出系统 <span class="sr-only">(current)</span></a>
+                        </li>
                     {% else %}
                         <li class="nav-item active">
                             <a class="nav-link" href="{% url 'user:login' %}">登录 <span class="sr-only">(current)</span></a>
@@ -43,68 +48,83 @@
             <div class="row">
                 <div class="col-md-2">
                     <div id="accordion">
-                        {% if perms.plan_management.can_see %}
-                            <div class="card bg-info">
-                            <div class="card-header text-center" id="headingOne">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-info" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        计划管理
-                                    </button>
-                                </h5>
+                        {% if  perms.plan_management.view_plan %}
+                            <div class="card bg-light">
+                            <div class="card-header text-center py-2 px-1" id="headingOne">
+                                <button class="btn btn-light py-1 px-5" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    计划管理
+                                </button>
                             </div>
                             <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                                 <ul class="list-group list-group-flush">
-                                    <a href="" class="list-group-item text-sm-center text-white bg-secondary">Cras justo odio</a>
-                                    <a href="" class="list-group-item text-sm-center text-white bg-secondary">Dapibus ac facilisis in</a>
-                                    <a href="" class="list-group-item text-sm-center text-white bg-secondary">Vestibulum at eros</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Cras justo odio</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Dapibus ac facilisis in</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Vestibulum at eros</a>
                                 </ul>
                             </div>
                         </div>
                         {% endif %}
-                        <div class="card bg-info">
-                            <div class="card-header text-center" id="headingTwo">
-                                <h5 class="mb-0">
-                                <button class="btn btn-info collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <div class="card bg-light">
+                            <div class="card-header text-center py-2 px-1" id="headingTwo">
+                                <button class="btn bg-light collapsed py-1 px-5" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 采购管理
                                 </button>
-                                </h5>
                             </div>
                             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                                 <ul class="list-group list-group-flush">
-                                    <a href="" class="list-group-item text-sm-center text-white bg-secondary">Cras justo odio</a>
-                                    <a href="" class="list-group-item text-sm-center text-white bg-secondary">Dapibus ac facilisis in</a>
-                                    <a href="" class="list-group-item text-sm-center text-white bg-secondary">Vestibulum at eros</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Cras justo odio</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Dapibus ac facilisis in</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Vestibulum at eros</a>
                                 </ul>
                             </div>
                         </div>
-                        <div class="card bg-info">
-                            <div class="card-header text-center" id="headingThree">
-                                <h5 class="mb-0">
-                                <button class="btn btn-info collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <div class="card bg-light">
+                            <div class="card-header text-center py-2 px-1" id="headingThree">
+                                <button class="btn bg-light collapsed py-1 px-5" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                 库存管理
                                 </button>
-                                </h5>
                             </div>
                             <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                                 <ul class="list-group list-group-flush">
-                                    <a href="" class="list-group-item text-sm-center text-white bg-secondary">Cras justo odio</a>
-                                    <a href="" class="list-group-item text-sm-center text-white bg-secondary">Dapibus ac facilisis in</a>
-                                    <a href="" class="list-group-item text-sm-center text-white bg-secondary">Vestibulum at eros</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Cras justo odio</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Dapibus ac facilisis in</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Vestibulum at eros</a>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-10">
-                    <div class="jumbotron bg-info text-white">
-                        <h1 class="display-3">Hello, world!</h1>
-                        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-                        <hr class="my-4">
-                        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-                        <p class="lead">
-                        <a class="btn btn-secondary btn-lg" href="#" role="button">Learn more</a>
-                        </p>
-                    </div>
+                    <table class="table border">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">First Name</th>
+                                <th scope="col">Last Name</th>
+                                <th scope="col">Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td>Larry</td>
+                                <td>the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

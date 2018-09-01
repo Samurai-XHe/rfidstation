@@ -10,53 +10,55 @@
     <title>登录系统</title>
 </head>
 <body>
-    <section id="login-section">
-        <div class="lvjing">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4 offset-md-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <i class="fa fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;用户登录
-                            </div>
-                            <div class="card-body">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                        <div class="form-row align-items-center">
-                                            <label class="" for="{{ login_form.username.id_for_label }}">{{ login_form.username.label }}</label>
-                                            <div class="input-group mb-2">
-                                                <div class="input-group-prepend">
-                                                    <div class="input-group-text">
-                                                        <i class="fa fa-user-o" aria-hidden="true"></i>
-                                                    </div>
-                                                </div>
-                                                {{ login_form.username }}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;用户登录
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                                <div class="form-row align-items-center">
+                                    <label class="" for="{{ login_form.username.id_for_label }}">{{ login_form.username.label }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fa fa-user-o" aria-hidden="true"></i>
                                             </div>
-                                            <p class="text-danger">{{ login_form.username.errors.as_text }}</p>
                                         </div>
-                                        <div class="form-row align-items-center">
-                                            <label class="" for="{{ login_form.password.id_for_label }}">{{ login_form.password.label }}</label>
-                                            <div class="input-group mb-2">
-                                                <div class="input-group-prepend">
-                                                    <div class="input-group-text">
-                                                            <i class="fa fa-lock" aria-hidden="true"></i>
-                                                    </div>
-                                                </div>
-                                                {{ login_form.password }}
+                                        {{ login_form.username }}
+                                    </div>
+                                    <p class="text-danger">{{ login_form.username.errors.as_text }}</p>
+                                </div>
+                                <div class="form-row align-items-center">
+                                    <label class="" for="{{ login_form.password.id_for_label }}">{{ login_form.password.label }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                    <i class="fa fa-lock" aria-hidden="true"></i>
                                             </div>
-                                            <p class="text-danger">{{ login_form.password.errors.as_text }}</p>
                                         </div>
-                                    <span class="text-danger">{{ login_form.non_field_errors.as_text }}</span>
-                                    <input type="submit" value="登录" class="btn btn-light float-right">
-                                </form>
-                            </div>
-                        </div>
+                                        {{ login_form.password }}
+                                    </div>
+                                    <p class="text-danger">{{ login_form.password.errors.as_text }}</p>
+                                </div>
+                            <span class="text-danger">{{ login_form.non_field_errors.as_text }}</span>
+                            <input type="submit" value="登录" class="btn btn-light float-right">
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
+        <div class="row">
+            <div class="col-md-12">
+                <footer>
+                    <p class="text-center text-light">@人间五十年，如梦亦如幻</p>
+                </footer>
+            </div>
+        </div>
+    </div>
     <script src="{% static 'js/jquery-3.2.1-jquery.slim.min.js' %}"></script>
     <script src="{% static 'js/popper.js-1.12.9-umd-popper.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>

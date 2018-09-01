@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from department.models import Department
 
 class Profile(models.Model):
     nickname = models.CharField(max_length=20)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,verbose_name='所属部门',null=True)
 
     user = models.OneToOneField(User,on_delete=models.CASCADE)
 
