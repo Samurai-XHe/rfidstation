@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0-dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script src="{% static 'echarts/echarts.js' %}"></script>
     <title>系统首页</title>
 </head>
 <body>
     <section id="index-title">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-info">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -49,25 +50,25 @@
                 <div class="col-md-2">
                     <div id="accordion">
                         {% if  perms.plan_management.view_plan %}
-                            <div class="card bg-light">
-                            <div class="card-header text-center py-2 px-1" id="headingOne">
-                                <button class="btn btn-light py-1 px-5" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    计划管理
-                                </button>
+                            <div class="card bg-info">
+                                <div class="card-header text-center py-2 px-1" id="headingOne">
+                                    <button class="btn btn-info collapsed py-1 px-5" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        计划管理
+                                    </button>
+                                </div>
+                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                    <ul class="list-group list-group-flush">
+                                        <a href="" class="list-group-item text-sm-center text-dark bg-light">Cras justo odio</a>
+                                        <a href="" class="list-group-item text-sm-center text-dark bg-light">Dapibus ac facilisis in</a>
+                                        <a href="" class="list-group-item text-sm-center text-dark bg-light">Vestibulum at eros</a>
+                                    </ul>
+                                </div>
                             </div>
-                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                                <ul class="list-group list-group-flush">
-                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Cras justo odio</a>
-                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Dapibus ac facilisis in</a>
-                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Vestibulum at eros</a>
-                                </ul>
-                            </div>
-                        </div>
                         {% endif %}
-                        <div class="card bg-light">
+                        <div class="card bg-info">
                             <div class="card-header text-center py-2 px-1" id="headingTwo">
-                                <button class="btn bg-light collapsed py-1 px-5" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                采购管理
+                                <button class="btn btn-info collapsed py-1 px-5" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    采购管理
                                 </button>
                             </div>
                             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
@@ -78,10 +79,10 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="card bg-light">
+                        <div class="card bg-info">
                             <div class="card-header text-center py-2 px-1" id="headingThree">
-                                <button class="btn bg-light collapsed py-1 px-5" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                库存管理
+                                <button class="btn btn-info collapsed py-1 px-5" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    库存管理
                                 </button>
                             </div>
                             <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
@@ -95,36 +96,8 @@
                     </div>
                 </div>
                 <div class="col-md-10">
-                    <table class="table border">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">First Name</th>
-                                <th scope="col">Last Name</th>
-                                <th scope="col">Username</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div id="main" class="">
+                    </div>
                 </div>
             </div>
         </div>
@@ -132,5 +105,71 @@
     <script src="{% static 'js/jquery-3.2.1-jquery.slim.min.js' %}"></script>
     <script src="{% static 'js/popper.js-1.12.9-umd-popper.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>
+    <script>
+        var myChart = echarts.init(document.getElementById('main'));
+        option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    magicType: {show: true, type: ['line', 'bar']},
+                    saveAsImage: {show: true},
+                },
+                orient:'vertical',
+                right: 20,
+                itemGap: 20
+            },
+            legend: {
+                data:['计划申请','采购申请','领用申请']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '数量',
+                    min: 0,
+                    max: 100,
+                    interval: 10,
+                    axisLabel: {
+                        formatter: '{value} 次'
+                    }
+                },
+            ],
+            series: [
+                {
+                    name:'计划申请',
+                    type:'bar',
+                    data:[4, 13, 29, 30, 25, 47, 12, 50, 55, 50, 56, 80]
+                },
+                {
+                    name:'采购申请',
+                    type:'bar',
+                    data:[2, 20, 15, 23, 29, 49, 39, 44, 59, 59, 63, 70]
+                },
+                {
+                    name:'领用申请',
+                    type:'bar',
+
+                    data:[10, 30, 36, 24, 39, 38, 48, 59, 85, 77, 89, 90]
+                }
+            ]
+        };
+        myChart.setOption(option);
+    </script>
 </body>
 </html>
