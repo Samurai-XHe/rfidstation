@@ -128,5 +128,5 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'static')
+    os.path.join(BASE_DIR,'static'),   #一定要加逗号‘，’，不然应用内的static文件会失效
 ]

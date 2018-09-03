@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}计划汇总{% endblock %}
+{% block head_extends %}
+    <link rel="stylesheet" href="{% static 'plan_management/css/plan_summary.css' %}">
+{% endblock %}
+{% block plan_show %}show{% endblock %}
+{% block content %}
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark" href="{% url 'plan_management:plan_review' %}">计划审核</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark active" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
+      </li>
+    </ul>
+
+    <table class="table border border-top">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Username</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

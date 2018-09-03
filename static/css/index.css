@@ -1,10 +1,4 @@
-#index-body {
-    padding-top: 30px;
-}
-.navbar {
-    box-shadow: 1px 2px 3px #666;
-}
 #main {
+    margin-top: 20px;
     height: 500px;
-    width: 1000px;
 }

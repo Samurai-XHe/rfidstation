@@ -1,0 +1,110 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh-hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    {% block head_extends %}{% endblock %}
+
+</head>
+<body>
+    <section id="index-title">
+        <nav class="navbar navbar-expand-lg navbar-light bg-info">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                <a class="navbar-brand pl-2 text-white" href="{% url 'index' %}">资产管理系统</a>
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+                </ul>
+                <ul class="navbar-nav mt-2 mt-lg-0">
+                    <li class="nav-item active dropdown mr-2">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ user.get_nickname }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if user.is_staff %}
+                                <a class="dropdown-item text-info" href="{% url 'admin:index' %}">后台管理</a>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link pr-2 text-white" href="{% url 'user:logout' %}">退出系统 <span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </section>
+    <section id="index-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2">
+                    <div id="accordion">
+                        {% if  perms.plan_management.view_plan %}
+                            <div class="card bg-info">
+                                <div class="card-header text-center py-2 px-1" id="headingOne">
+                                    <button class="btn btn-info collapsed py-1 px-lg-5" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        计划管理
+                                    </button>
+                                </div>
+                                <div id="collapseOne" class="collapse {% block plan_show %}{% endblock %}" aria-labelledby="headingOne" data-parent="#accordion">
+                                    <ul class="list-group list-group-flush">
+                                        <a href="{% url 'plan_management:plan_applications' %}" class="list-group-item text-sm-center text-dark bg-light">计划申请</a>
+                                        <a href="{% url 'plan_management:plan_review' %}" class="list-group-item text-sm-center text-dark bg-light">计划审核</a>
+                                        <a href="{% url 'plan_management:plan_summary' %}" class="list-group-item text-sm-center text-dark bg-light">计划汇总</a>
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="card bg-info">
+                            <div class="card-header text-center py-2 px-1" id="headingTwo">
+                                <button class="btn btn-info collapsed py-1 px-lg-5" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    采购管理
+                                </button>
+                            </div>
+                            <div id="collapseTwo" class="collapse {% block two_show %}{% endblock %}" aria-labelledby="headingTwo" data-parent="#accordion">
+                                <ul class="list-group list-group-flush">
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Cras justo odio</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Dapibus ac facilisis in</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Vestibulum at eros</a>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card bg-info">
+                            <div class="card-header text-center py-2 px-1" id="headingThree">
+                                <button class="btn btn-info collapsed py-1 px-lg-5" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    库存管理
+                                </button>
+                            </div>
+                            <div id="collapseThree" class="collapse {% block three_show %}{% endblock %}" aria-labelledby="headingThree" data-parent="#accordion">
+                                <ul class="list-group list-group-flush">
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Cras justo odio</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Dapibus ac facilisis in</a>
+                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Vestibulum at eros</a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10">
+
+                    {% block content %}{% endblock %}
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="{% static 'js/jquery-3.2.1-jquery.slim.min.js' %}"></script>
+    <script src="{% static 'js/popper.js-1.12.9-umd-popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>
+
+    {% block script_extends %}{% endblock %}
+
+</body>
+</html>

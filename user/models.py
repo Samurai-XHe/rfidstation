@@ -17,5 +17,12 @@ def get_nickname(self):
         return pro.nickname
     else:
         return self.username
+def get_department(self):
+    if Profile.objects.filter(user=self).exists():
+        pro = Profile.objects.get(user=self)
+        return pro.department.department_name
+    else:
+        return '暂无部门'
 
 User.get_nickname = get_nickname
+User.get_department = get_department
