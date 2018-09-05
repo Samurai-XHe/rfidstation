@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}添加计划申请{% endblock %}
+{% block head_extends %}
+    <link rel="stylesheet" href="{% static 'plan_management/css/add_plan.css' %}">
+    <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css' %}">
+{% endblock %}
+{% block plan_show %}show{% endblock %}
+{% block content %}
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            添加计划申请
+            <a href="{% url 'plan_management:plan_applications' %}" class="btn btn-light float-right" title="返回上一页">
+                <i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div class="card-body">
+            <form action="#" method="post">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="{{ form.department.id_for_label }}">申报部门</label>
+                        {{ form.department }}
+                    </div>
+                    <div class="col">
+                        <label for="{{ form.user.id_for_label }}">申报人</label>
+                        {{ form.user }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="{{ form.year.id_for_label }}">年度</label>
+                        {{ form.year }}
+                    </div>
+                    <div class="col">
+                        <label for="{{ form.date_of_application.id_for_label }}">申请日期</label>
+                        {{ form.date_of_application }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label for="{{ form.assets.id_for_label }}">资产</label>
+                        {{ form.assets }}
+                    </div>
+                </div>
+                <button class="btn btn-info float-right" type="submit">提交</button>
+            </form>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block script_extends %}
+    <script src="{% static 'bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+    <script>
+        $("#date_input").datetimepicker({
+            format: "yyyy",
+            showMeridian: true,
+            autoclose: true,
+            todayBtn: true,
+            startView: 4,
+            minView:4,
+            language: 'zh-CN',
+            pickerPosition: "bottom-left",
+        });
+        $("#date_time_input").datetimepicker({
+            format: "yyyy-mm-dd",
+            showMeridian: true,
+            autoclose: true,
+            todayBtn: true,
+            startView: 4,
+            minView:2,
+            language: 'zh-CN',
+            pickerPosition: "bottom-left",
+        });
+    </script>
+{% endblock %}

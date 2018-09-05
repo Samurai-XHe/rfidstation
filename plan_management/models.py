@@ -16,9 +16,9 @@ class Plan(models.Model):
     department = models.ForeignKey(Department,on_delete=models.CASCADE,verbose_name='申报部门')
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='plan_user',verbose_name='申报人')
     year = models.IntegerField('年度')
-    date_of_application = models.DateField('申请日期',auto_now_add=True)
+    date_of_application = models.DateField('申请日期')
     application_status = models.ForeignKey(ApplicationStatus,on_delete=models.CASCADE,verbose_name='申请状态')
-    operator = models.ManyToManyField(User,related_name='plan_operator',verbose_name='操作人')
+    operator = models.ManyToManyField(User,related_name='plan_operator',verbose_name='操作人',null=True)
     assets = models.ManyToManyField(Assets,verbose_name='资产')
 
     def __str__(self):

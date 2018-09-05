@@ -7,26 +7,37 @@
 {% endblock %}
 {% block plan_show %}show{% endblock %}
 {% block content %}
+    {% if success_message %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ success_message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
     <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link active text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-dark" href="{% url 'plan_management:plan_review' %}">计划审核</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-dark" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
-      </li>
+        <li class="nav-item">
+            <a class="nav-link active text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_review' %}">计划审核</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
+        </li>
     </ul>
+
     <div class="container-fluid">
         <div class="row bg-info">
             <div class="col-md-2 text-justify">
                 <div class="mt-2">
-                    <p class="mb-0 font-weight-bold text-white">部门：{{ user.get_department }}</p>
+                    <p class="mb-0 text-white">部门：{{ user.get_department }}</p>
                 </div>
             </div>
             <div class="col-md-2 offset-md-8">
-                <a href="" class="btn btn-light float-right"><i class="fa fa-plus-square fa-lg" aria-hidden="true"></i></a>
+                <a href="{% url 'plan_management:add_plan' %}" class="btn btn-light float-right" title="添加申请">
+                    <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i>
+                </a>
             </div>
         </div>
     </div>
@@ -34,31 +45,41 @@
     <table class="table border border-top">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Username</th>
+                <th scope="col">序号</th>
+                <th scope="col">申报部门</th>
+                <th scope="col">申报人</th>
+                <th scope="col">年度</th>
+                <th scope="col">申请日期</th>
+                <th scope="col">申请状态</th>
+                <th scope="col">操作人</th>
+                <th scope="col">操作</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-            </tr>
+            {% for plan in plan_list %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ plan.department.department_name }}</td>
+                    <td>{{ plan.user.username }}</td>
+                    <td>{{ plan.year }}</td>
+                    <td>{{ plan.date_of_application }}</td>
+                    <td>{{ plan.application_status.status }}</td>
+                    <td>{{ plan.operator.username }}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle bg-info" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                操作
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{% url 'plan_management:view_plan' plan.pk %}">查看</a>
+                                <a class="dropdown-item" href="#">修改</a>
+                                <a class="dropdown-item" href="#">提交</a>
+                                <a class="dropdown-item" href="#">删除</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}

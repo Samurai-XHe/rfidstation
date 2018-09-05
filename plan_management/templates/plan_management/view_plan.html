@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}查看详情{% endblock %}
+{% block head_extends %}
+    <link rel="stylesheet" href="{% static 'plan_management/css/view_plan.css' %}">
+    <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
+{% endblock %}
+{% block plan_show %}show{% endblock %}
+{% block content %}
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            计划申请详情
+            <a href="{% url 'plan_management:plan_applications' %}" class="btn btn-light float-right" title="返回上一页">
+                <i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div class="card-body">
+            <form action="">
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="">申报部门</label>
+                        <input class="form-control" type="text" readonly value="{{ plan.department.department_name }}">
+                    </div>
+                    <div class="col">
+                        <label for="">申报人</label>
+                        <input class="form-control" type="text" readonly value="{{ plan.user.username }}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="">年度</label>
+                        <input class="form-control" type="text" readonly value="{{ plan.year }}">
+                    </div>
+                    <div class="col">
+                        <label for="">申请日期</label>
+                        <input class="form-control" type="text" readonly value="{{ plan.date_of_application }}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label for="">资产</label>
+                        <input class="form-control" type="text" readonly value="{{ plan.assets.first.assets_name }}">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script_extends %}
+    <script src="{% static 'bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+    <script>
+    </script>
+{% endblock %}

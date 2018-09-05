@@ -6,4 +6,6 @@ urlpatterns = [
     path('plan_applications/',views.plan_applications,name='plan_applications'),
     path('plan_review/',views.plan_review,name='plan_review'),
     path('plan_summary/',views.plan_summary,name='plan_summary'),
+    path('add_plan/',views.add_plan,name='add_plan'),
+    path('view_plan/<int:plan_pk>',views.view_plan,name='view_plan'),
 ]
