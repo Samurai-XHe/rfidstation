@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}添加计划申请{% endblock %}
+{% block title %}修改计划申请{% endblock %}
 {% block head_extends %}
-    <link rel="stylesheet" href="{% static 'plan_management/css/add_plan.css' %}">
+    <link rel="stylesheet" href="{% static 'plan_management/css/plan_modify.css' %}">
     <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css' %}">
 {% endblock %}
@@ -10,7 +10,7 @@
 {% block content %}
     <div class="card">
         <div class="card-header bg-info text-white">
-            添加计划申请
+            修改计划申请
             <a href="{% url 'plan_management:plan_applications' %}" class="btn btn-light float-right" title="返回上一页">
                 <i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i>
             </a>
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                 </div>
-                <input class="btn btn-info float-right" type="submit" value="提交">
+                <input class="btn btn-info float-right" type="submit" value="修改">
             </form>
 
         </div>
@@ -59,7 +59,7 @@
       <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
           <div class="modal-body text-center text-success">
-            添加成功
+            修改成功
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-info" data-dismiss="modal">关闭</button>
@@ -79,7 +79,7 @@
             $('.error_message').text('');
             $('.alert').removeClass('alert-danger')
             $.ajax({
-                url:'{% url 'plan_management:add_plan_interface' %}',
+                url:'{% url 'plan_management:plan_modify_interface' plan.pk %}',
                 type:'POST',
                 data:$(this).serialize(),
                 cache:false,

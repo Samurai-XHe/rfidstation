@@ -46,22 +46,20 @@
             <div class="row">
                 <div class="col-md-2">
                     <div id="accordion">
-                        {% if  perms.plan_management.view_plan %}
-                            <div class="card bg-info">
-                                <div class="card-header text-center py-2 px-1" id="headingOne">
-                                    <button class="btn btn-info collapsed py-1 px-lg-5" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        计划管理
-                                    </button>
-                                </div>
-                                <div id="collapseOne" class="collapse {% block plan_show %}{% endblock %}" aria-labelledby="headingOne" data-parent="#accordion">
-                                    <ul class="list-group list-group-flush">
-                                        <a href="{% url 'plan_management:plan_applications' %}" class="list-group-item text-sm-center text-dark bg-light">计划申请</a>
-                                        <a href="{% url 'plan_management:plan_review' %}" class="list-group-item text-sm-center text-dark bg-light">计划审核</a>
-                                        <a href="{% url 'plan_management:plan_summary' %}" class="list-group-item text-sm-center text-dark bg-light">计划汇总</a>
-                                    </ul>
-                                </div>
+                        <div class="card bg-info">
+                            <div class="card-header text-center py-2 px-1" id="headingOne">
+                                <button class="btn btn-info collapsed py-1 px-lg-5" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    计划管理
+                                </button>
                             </div>
-                        {% endif %}
+                            <div id="collapseOne" class="collapse {% block plan_show %}{% endblock %}" aria-labelledby="headingOne" data-parent="#accordion">
+                                <ul class="list-group list-group-flush">
+                                    <a href="{% url 'plan_management:plan_applications' %}" class="list-group-item text-sm-center text-dark bg-light">计划申请</a>
+                                    <a href="{% url 'plan_management:plan_review' %}" class="list-group-item text-sm-center text-dark bg-light">计划审核</a>
+                                    <a href="{% url 'plan_management:plan_summary' %}" class="list-group-item text-sm-center text-dark bg-light">计划汇总</a>
+                                </ul>
+                            </div>
+                        </div>
                         <div class="card bg-info">
                             <div class="card-header text-center py-2 px-1" id="headingTwo">
                                 <button class="btn btn-info collapsed py-1 px-lg-5" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -100,8 +98,8 @@
             </div>
         </div>
     </section>
-    <script src="{% static 'js/jquery-3.2.1-jquery.slim.min.js' %}"></script>
-    <script src="{% static 'js/popper.js-1.12.9-umd-popper.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>
 
     {% block script_extends %}{% endblock %}

@@ -7,14 +7,6 @@
 {% endblock %}
 {% block plan_show %}show{% endblock %}
 {% block content %}
-    {% if success_message %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ success_message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    {% endif %}
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
@@ -27,23 +19,25 @@
         </li>
     </ul>
 
-    <div class="container-fluid">
+    <div class="container-fluid mt-2">
         <div class="row bg-info">
             <div class="col-md-2 text-justify">
                 <div class="mt-2">
-                    <p class="mb-0 text-white">部门：{{ user.get_department }}</p>
+                    <h7 class="mb-0 text-white">{{ user.get_department }}</h7>
                 </div>
             </div>
             <div class="col-md-2 offset-md-8">
-                <a href="{% url 'plan_management:add_plan' %}" class="btn btn-light float-right" title="添加申请">
+                {% if perms.plan_management.add_plan %}
+                    <a href="{% url 'plan_management:add_plan' %}" class="btn btn-light float-right" title="添加申请">
                     <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i>
                 </a>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <table class="table border border-top">
-        <thead>
+    <table class="table table-sm table-striped table-bordered text-center">
+        <thead class="">
             <tr>
                 <th scope="col">序号</th>
                 <th scope="col">申报部门</th>
@@ -60,7 +54,7 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ plan.department.department_name }}</td>
-                    <td>{{ plan.user.username }}</td>
+                    <td>{{ plan.user.profile.nickname }}</td>
                     <td>{{ plan.year }}</td>
                     <td>{{ plan.date_of_application }}</td>
                     <td>{{ plan.application_status.status }}</td>
@@ -72,9 +66,15 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{% url 'plan_management:view_plan' plan.pk %}">查看</a>
-                                <a class="dropdown-item" href="#">修改</a>
-                                <a class="dropdown-item" href="#">提交</a>
-                                <a class="dropdown-item" href="#">删除</a>
+                                {% if perms.plan_management.change_plan %}
+                                    <a class="dropdown-item" href="{% url 'plan_management:plan_modify' plan.pk %}">修改</a>
+                                {% endif %}
+                                {% if perms.plan_management.add_plan %}
+                                    <a class="dropdown-item" href="#">提交</a>
+                                {% endif %}
+                                {% if perms.plan_management.delete_plan %}
+                                    <li id="delete" class="dropdown-item" onclick="delete_plan(this);" href="" plan_pk="{{ plan.pk }}">删除</li>
+                                {% endif %}
                             </div>
                         </div>
                     </td>
@@ -82,4 +82,52 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            确认要删除该申请？
+          </div>
+          <div class="modal-footer">
+              <button id="delete_yes" type="button" class="btn btn-danger" data-dismiss="modal">确认</button>
+            <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}
+
+{% block script_extends %}
+    <script>
+        function delete_plan(){
+            $('#DeleteModal').modal();  //从这里开始
+        }
+
+        $('#delete_yes').click(function () {
+            var plan_pk = $('#delete').attr("plan_pk");
+
+                $.ajax({
+                    url:"{% url 'plan_management:plan_delete' %}",
+                    type:'GET',
+                    cache:false,
+                    data:{
+                        plan_pk:plan_pk,
+                    },
+                    success:function (data) {
+                        console.log(data);
+                        if (data['status'] == 'SUCCESS'){
+                            window.location.reload();
+                        }
+                    },
+                    error:function (xhr) {
+                        console.log(xhr)
+                    }
+                });
+        })
+
+    </script>
 {% endblock %}

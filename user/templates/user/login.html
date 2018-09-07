@@ -66,13 +66,11 @@
             </div>
         </div>
     </div>
-    <script src="{% static 'js/jquery-3.2.1-jquery.slim.min.js' %}"></script>
-    <script src="{% static 'js/popper.js-1.12.9-umd-popper.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>
     <script>
-        $(function () {
-            $('#id_username').focus();
-        })
+        $('#id_username').focus();
         new WOW().init();
     </script>
 </body>
