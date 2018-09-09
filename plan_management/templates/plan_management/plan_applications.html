@@ -73,7 +73,7 @@
                                     <a class="dropdown-item" href="#">提交</a>
                                 {% endif %}
                                 {% if perms.plan_management.delete_plan %}
-                                    <li id="delete" class="dropdown-item" onclick="delete_plan(this);" href="" plan_pk="{{ plan.pk }}">删除</li>
+                                    <li class="dropdown-item" onclick="delete_plan(this);" href="" plan_pk="{{ plan.pk }}">删除</li>
                                 {% endif %}
                             </div>
                         </div>
@@ -103,12 +103,15 @@
 
 {% block script_extends %}
     <script>
-        function delete_plan(){
+    // 点击删除时给删除键添加class：delete，好让提交ajax时找到计划的id
+        function delete_plan(obj){
             $('#DeleteModal').modal();  //从这里开始
+            console.log(obj)
+            $(obj).addClass('delete');
         }
 
         $('#delete_yes').click(function () {
-            var plan_pk = $('#delete').attr("plan_pk");
+            var plan_pk = $('.delete').attr("plan_pk");
 
                 $.ajax({
                     url:"{% url 'plan_management:plan_delete' %}",
