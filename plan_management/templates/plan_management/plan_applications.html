@@ -23,7 +23,7 @@
         <div class="row bg-info">
             <div class="col-md-2 text-justify">
                 <div class="mt-2">
-                    <h7 class="mb-0 text-white">{{ user.get_department }}</h7>
+                    <h6 class="mb-0 text-white font-weight-normal">{{ user.get_department }}</h6>
                 </div>
             </div>
             <div class="col-md-2 offset-md-8">
@@ -58,7 +58,11 @@
                     <td>{{ plan.year }}</td>
                     <td>{{ plan.date_of_application }}</td>
                     <td>{{ plan.application_status.status }}</td>
-                    <td>{{ plan.operator.username }}</td>
+                    <td>
+                        {% for foo in plan.operator.all %}
+                            {{ foo.profile.nickname }}
+                        {% endfor %}
+                    </td>
                     <td>
                         <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle bg-info" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -67,13 +71,25 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{% url 'plan_management:view_plan' plan.pk %}">查看</a>
                                 {% if perms.plan_management.change_plan %}
-                                    <a class="dropdown-item" href="{% url 'plan_management:plan_modify' plan.pk %}">修改</a>
+                                    {% if plan.application_status.pk == 2 %}
+                                        <li class="dropdown-item text-black-50 no_modify" data-toggle="tooltip" data-placement="right" title="提交后不可修改">修改</li>
+                                    {% else %}
+                                        <a class="dropdown-item" href="{% url 'plan_management:plan_modify' plan.pk %}">修改</a>
+                                    {% endif %}
                                 {% endif %}
                                 {% if perms.plan_management.add_plan %}
-                                    <a class="dropdown-item" href="#">提交</a>
+                                    {% if plan.application_status.pk == 2 %}
+                                        <li class="dropdown-item text-black-50 no_submit" data-toggle="tooltip" data-placement="right" title="已提交">提交</li>
+                                    {% else %}
+                                        <a class="dropdown-item" onclick="submit_plan(this);" href="javascript:void(0)" plan_pk="{{ plan.pk }}">提交</a>
+                                    {% endif %}
                                 {% endif %}
                                 {% if perms.plan_management.delete_plan %}
-                                    <li class="dropdown-item" onclick="delete_plan(this);" href="" plan_pk="{{ plan.pk }}">删除</li>
+                                    {% if plan.application_status.pk == 2 %}
+                                        <li class="dropdown-item text-black-50 no_delete" data-toggle="tooltip" data-placement="right" title="提交后不可删除">删除</li>
+                                    {% else %}
+                                        <a class="dropdown-item" onclick="delete_plan(this);" href="javascript:void(0)" plan_pk="{{ plan.pk }}">删除</a>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </div>
@@ -82,6 +98,27 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="SubmitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="exampleModalLabel">将提交至以下审核人：</h6>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {{ department_leader }}
+          </div>
+          <div class="modal-footer">
+            <button id="submit_yes" type="button" class="btn btn-danger" data-dismiss="modal">确认</button>
+            <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -97,40 +134,71 @@
         </div>
       </div>
     </div>
-
-
 {% endblock %}
 
 {% block script_extends %}
     <script>
-    // 点击删除时给删除键添加class：delete，好让提交ajax时找到计划的id
+    // 冒泡提示
+        $('.no_modify').tooltip();
+        $('.no_delete').tooltip();
+        $('.no_submit').tooltip();
+
+    // 点击提交时给提交键添加class：submit，好让提交ajax时找到计划的plan_pk
+        function submit_plan(obj){
+            $('#SubmitModal').modal();
+            console.log(obj);
+            $(obj).addClass('submit');
+        }
+    // ajax提交请求，通过则提交数据并刷新页面
+        $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}}); //当ajax请求方式为post时需要加这一句。
+        $('#submit_yes').click(function () {
+            var plan_pk = $('.submit').attr('plan_pk');
+            $.ajax({
+                url:"{% url 'plan_management:plan_submit' %}",
+                type:'POST',
+                cache:false,
+                data:{
+                    plan_pk:plan_pk
+                },
+                success:function (data) {
+                  if(data['status'] == 'SUCCESS'){
+                      console.log(data);
+                      window.location.reload()
+                  }else{
+                      console.log(data)
+                  }
+                },
+                error:function (xhr) {
+                    console.log(xhr)
+                }
+            })
+        });
+    // 点击删除时给删除键添加class：delete，好让提交ajax时找到计划的plan_pk
         function delete_plan(obj){
-            $('#DeleteModal').modal();  //从这里开始
-            console.log(obj)
+            $('#DeleteModal').modal();
+            console.log(obj);
             $(obj).addClass('delete');
         }
-
+    // ajax提交删除请求，通过则删除数据并刷新页面
         $('#delete_yes').click(function () {
             var plan_pk = $('.delete').attr("plan_pk");
-
-                $.ajax({
-                    url:"{% url 'plan_management:plan_delete' %}",
-                    type:'GET',
-                    cache:false,
-                    data:{
-                        plan_pk:plan_pk,
-                    },
-                    success:function (data) {
-                        console.log(data);
-                        if (data['status'] == 'SUCCESS'){
-                            window.location.reload();
-                        }
-                    },
-                    error:function (xhr) {
-                        console.log(xhr)
+            $.ajax({
+                url:"{% url 'plan_management:plan_delete' %}",
+                type:'GET',
+                cache:false,
+                data:{
+                    plan_pk:plan_pk
+                },
+                success:function (data) {
+                    console.log(data);
+                    if (data['status'] == 'SUCCESS'){
+                        window.location.reload();
                     }
-                });
+                },
+                error:function (xhr) {
+                    console.log(xhr)
+                }
+            });
         })
-
     </script>
 {% endblock %}

@@ -3,49 +3,67 @@
 {% block title %}计划审核{% endblock %}
 {% block head_extends %}
     <link rel="stylesheet" href="{% static 'plan_management/css/plan_review.css' %}">
+    <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
 {% endblock %}
 {% block plan_show %}show{% endblock %}
 {% block content %}
     <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-dark active" href="{% url 'plan_management:plan_review' %}">计划审核</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-dark" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
-      </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark active" href="{% url 'plan_management:plan_review' %}">计划审核</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
+        </li>
     </ul>
 
-    <table class="table border border-top">
-        <thead>
+    <div class="container-fluid mt-2">
+        <div class="row bg-info">
+            <div class="col-md-2 text-justify">
+                <div class="mt-2">
+                    <h6 class="mb-2 text-white font-weight-normal">{{ user.get_department }}</h6>
+                </div>
+            </div>
+            <div class="col-md-2 offset-md-8">
+
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-sm table-striped table-bordered text-center">
+        <thead class="">
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Username</th>
+                <th scope="col">序号</th>
+                <th scope="col">申报部门</th>
+                <th scope="col">申报人</th>
+                <th scope="col">年度</th>
+                <th scope="col">申请日期</th>
+                <th scope="col">申请状态</th>
+                <th scope="col">操作人</th>
+                <th scope="col">操作</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-            </tr>
+            {% for plan in plan_list %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ plan.department.department_name }}</td>
+                    <td>{{ plan.user.profile.nickname }}</td>
+                    <td>{{ plan.year }}</td>
+                    <td>{{ plan.date_of_application }}</td>
+                    <td>{{ plan.application_status.status }}</td>
+                    <td>
+                        {% for foo in plan.operator.all %}
+                            {{ foo.profile.nickname }}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{% url 'plan_management:review_page' plan.pk %}" class="btn btn-info">审核</a>
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}

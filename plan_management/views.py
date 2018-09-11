@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.db.models import Q
 from .forms import PlanapplicationsForm
 from .models import Department,Assets,Plan,ApplicationStatus
 
@@ -11,14 +12,12 @@ from .models import Department,Assets,Plan,ApplicationStatus
 def plan_applications(request):
     user = request.user
     department = user.profile.department.department_name
+    plan_list = Plan.objects.filter(Q(application_status=1)|Q(application_status=2),department__department_name=department).order_by('-date_of_application')
+    leader = User.objects.get(profile__department__department_name=department,groups__name='部门领导')
     context = {}
-    plan_list = Plan.objects.filter(application_status=1,department__department_name=department).order_by('-date_of_application')
     context['plan_list'] = plan_list
+    context['department_leader'] = leader.profile.nickname
     return render(request,'plan_management/plan_applications.html',context)
-
-@login_required
-def plan_review(request):
-    return render(request,'plan_management/plan_review.html')
 
 @login_required
 def plan_summary(request):
@@ -126,6 +125,28 @@ def plan_modify(request,plan_pk):
     return render(request,'plan_management/plan_modify.html',context)
 
 @login_required
+def plan_submit(request):
+    data = {}
+    user = request.user
+    depart = user.profile.department.department_name
+    plan_pk = request.POST.get('plan_pk')
+    try:
+        plan_pk = int(plan_pk)
+        plan = Plan.objects.get(pk=plan_pk)
+    except Plan.DoesNotExist as e:
+        data['status'] = 'ERROR'
+        data['message'] = '计划不存在'
+        return JsonResponse(data)
+    status = ApplicationStatus.objects.get(pk=2)
+    leader = User.objects.get(profile__department__department_name=depart,groups__name='部门领导')
+    plan.application_status = status
+    plan.operator.add(leader)
+    plan.save()
+    data['status'] = 'SUCCESS'
+    return JsonResponse(data)
+
+
+@login_required
 def plan_delete(request):
     user = request.user
     try:
@@ -141,3 +162,23 @@ def plan_delete(request):
     else:
         data['status'] = 'ERROR'
         return JsonResponse(data)
+
+@login_required
+def plan_review(request):
+    user = request.user
+    department = user.profile.department.department_name
+    plan_list = Plan.objects.filter(application_status=2,
+                                    department__department_name=department).order_by('-date_of_application')
+    context = {}
+    context['plan_list'] = plan_list
+    return render(request,'plan_management/plan_review.html',context)
+
+def review_page(request,plan_pk):
+    try:
+        plan_pk = int(plan_pk)
+        plan = Plan.objects.get(pk=plan_pk)
+    except Plan.DoesNotExist as e:
+        return redirect(reverse('index'))
+    context = {}
+    context['plan'] = plan
+    return render(request,'plan_management/review_page.html',context)

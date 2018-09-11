@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'assets_management',
     'department',
     'plan_management',
+    'review',
 ]
 
 MIDDLEWARE = [

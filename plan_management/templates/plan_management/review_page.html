@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}查看详情{% endblock %}
+{% block title %}部门审核{% endblock %}
 {% block head_extends %}
-    <link rel="stylesheet" href="{% static 'plan_management/css/view_plan.css' %}">
+    <link rel="stylesheet" href="{% static 'plan_management/css/review_page.css' %}">
     <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
 {% endblock %}
 {% block plan_show %}show{% endblock %}
 {% block content %}
     <div class="card">
         <div class="card-header bg-info text-white">
-            计划申请详情
-            <a href="{% url 'plan_management:plan_applications' %}" class="btn btn-light float-right" title="返回上一页">
+            部门审核
+            <a href="{% url 'plan_management:plan_review' %}" class="btn btn-light float-right" title="返回上一页">
                 <i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i>
             </a>
         </div>
@@ -42,14 +42,32 @@
                         <input class="form-control" type="text" readonly value="{{ ass.assets_name }}">
                     {% endfor %}
                 </div>
+                <div class="col-md-6">
+                    <form id="review-form" action="#" method="post">
+
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="alert float-right" role="alert">
+                    <sapn class="error_message"></sapn>
+                </div>
+                <input class="btn btn-info float-right" type="submit" value="不通过">
+                <input class="btn btn-info float-right" type="submit" value="通过">
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block script_extends %}
-    <script src="{% static 'bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
-    <script src="{% static 'bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
-    <script>
-    </script>
+    <!-- Modal -->
+    <div class="modal fade bd-example-modal-sm" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-body text-center text-success">
+            修改成功
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}
