@@ -46,10 +46,10 @@ class PlanapplicationsForm(forms.Form):
         super(PlanapplicationsForm, self).__init__(*args,**kwargs)
         # values_list方法可以获得一个列表形式的QuerySet对象，能直接用list转换成列表,例:[(0, ''), (1, '桌子'), (2, '椅子'), (3, '电视')]
         list1 = list(User.objects.filter(profile__department__department_name=self.depart).values_list('id','profile__nickname'))
-        list1.insert(0,(0,''))  #添加一个空选项
+        list1.insert(0,(0,'请选择'))  #添加一个空选项
         self.fields['user'].widget.choices = list1
         list2 = list(Assets.objects.all().values_list('id', 'assets_name'))
-        list2.insert(0, (0, ''))
+        list2.insert(0, (0, '请选择'))
         self.fields['assets'].widget.choices = list2
 
 
@@ -67,7 +67,7 @@ class PlanapplicationsForm(forms.Form):
         user = self.cleaned_data.get('user','')
         user_true = User.objects.filter(profile__department__department_name=self.depart).filter(pk=user).exists()
         if not user_true:
-            raise forms.ValidationError('<申报人>错误')
+            raise forms.ValidationError('请选择<申报人>')
         else:
             return user
 
@@ -89,5 +89,5 @@ class PlanapplicationsForm(forms.Form):
         assets = self.cleaned_data.get('assets','')
         aassets_true = Assets.objects.filter(pk=assets).exists()
         if assets == '' or not aassets_true:
-            raise forms.ValidationError('<资产>不存在')
+            raise forms.ValidationError('请选择<资产>')
         return assets

@@ -7,9 +7,9 @@
 {% endblock %}
 {% block plan_show %}show{% endblock %}
 {% block content %}
-    <ul class="nav nav-tabs">
+    <ul class="nav">
         <li class="nav-item">
-            <a class="nav-link active text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
+            <a class="nav-link active text-light bg-info" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-dark" href="{% url 'plan_management:plan_review' %}">计划审核</a>
@@ -19,25 +19,25 @@
         </li>
     </ul>
 
-    <div class="container-fluid mt-2">
+    <div class="container-fluid">
         <div class="row bg-info">
             <div class="col-md-2 text-justify">
-                <div class="mt-2">
-                    <h6 class="mb-0 text-white font-weight-normal">{{ user.get_department }}</h6>
+                <div class="mt-3 mb-3">
+                    <h6 class="text-white font-weight-normal">{{ user.get_department }}</h6>
                 </div>
             </div>
             <div class="col-md-2 offset-md-8">
                 {% if perms.plan_management.add_plan %}
-                    <a href="{% url 'plan_management:add_plan' %}" class="btn btn-light float-right" title="添加申请">
-                    <i class="fa fa-plus-square fa-lg" aria-hidden="true"></i>
-                </a>
+                    <a href="{% url 'plan_management:add_plan' %}" class="btn btn-light float-right mt-1" title="添加申请">
+                        <i class="fa fa-plus-square fa-lg text-info" aria-hidden="true"></i>
+                    </a>
                 {% endif %}
             </div>
         </div>
     </div>
 
     <table class="table table-sm table-striped table-bordered text-center">
-        <thead class="">
+        <thead>
             <tr>
                 <th scope="col">序号</th>
                 <th scope="col">申报部门</th>
@@ -52,18 +52,18 @@
         <tbody>
             {% for plan in plan_list %}
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ plan.department.department_name }}</td>
-                    <td>{{ plan.user.profile.nickname }}</td>
-                    <td>{{ plan.year }}</td>
-                    <td>{{ plan.date_of_application }}</td>
-                    <td>{{ plan.application_status.status }}</td>
-                    <td>
+                    <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                    <td class="align-middle">{{ plan.department.department_name }}</td>
+                    <td class="align-middle">{{ plan.user.profile.nickname }}</td>
+                    <td class="align-middle">{{ plan.year }}</td>
+                    <td class="align-middle">{{ plan.date_of_application }}</td>
+                    <td class="align-middle">{{ plan.application_status.status }}</td>
+                    <td class="align-middle">
                         {% for foo in plan.operator.all %}
                             {{ foo.profile.nickname }}
                         {% endfor %}
                     </td>
-                    <td>
+                    <td class="align-middle">
                         <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle bg-info" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 操作
@@ -71,21 +71,21 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{% url 'plan_management:view_plan' plan.pk %}">查看</a>
                                 {% if perms.plan_management.change_plan %}
-                                    {% if plan.application_status.pk == 2 %}
+                                    {% if plan.application_status.pk == 2 or plan.application_status.pk == 3 %}
                                         <li class="dropdown-item text-black-50 no_modify" data-toggle="tooltip" data-placement="right" title="提交后不可修改">修改</li>
                                     {% else %}
                                         <a class="dropdown-item" href="{% url 'plan_management:plan_modify' plan.pk %}">修改</a>
                                     {% endif %}
                                 {% endif %}
                                 {% if perms.plan_management.add_plan %}
-                                    {% if plan.application_status.pk == 2 %}
+                                    {% if not plan.application_status.pk == 1%}
                                         <li class="dropdown-item text-black-50 no_submit" data-toggle="tooltip" data-placement="right" title="已提交">提交</li>
                                     {% else %}
                                         <a class="dropdown-item" onclick="submit_plan(this);" href="javascript:void(0)" plan_pk="{{ plan.pk }}">提交</a>
                                     {% endif %}
                                 {% endif %}
                                 {% if perms.plan_management.delete_plan %}
-                                    {% if plan.application_status.pk == 2 %}
+                                    {% if not plan.application_status.pk == 1 %}
                                         <li class="dropdown-item text-black-50 no_delete" data-toggle="tooltip" data-placement="right" title="提交后不可删除">删除</li>
                                     {% else %}
                                         <a class="dropdown-item" onclick="delete_plan(this);" href="javascript:void(0)" plan_pk="{{ plan.pk }}">删除</a>
@@ -146,11 +146,11 @@
     // 点击提交时给提交键添加class：submit，好让提交ajax时找到计划的plan_pk
         function submit_plan(obj){
             $('#SubmitModal').modal();
-            console.log(obj);
             $(obj).addClass('submit');
         }
     // ajax提交请求，通过则提交数据并刷新页面
-        $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}}); //当ajax请求方式为post时需要加这一句。
+    //当采用非form表单（$('#form).submit()）的ajax请求方式时需要加这一句手动加上csrf验证码
+        $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
         $('#submit_yes').click(function () {
             var plan_pk = $('.submit').attr('plan_pk');
             $.ajax({
@@ -176,7 +176,6 @@
     // 点击删除时给删除键添加class：delete，好让提交ajax时找到计划的plan_pk
         function delete_plan(obj){
             $('#DeleteModal').modal();
-            console.log(obj);
             $(obj).addClass('delete');
         }
     // ajax提交删除请求，通过则删除数据并刷新页面

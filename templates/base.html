@@ -28,11 +28,12 @@
                         <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{ user.get_nickname }}
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            {% if user.is_staff %}
+                        {% if user.is_staff %}
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item text-info" href="{% url 'admin:index' %}">后台管理</a>
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% endif %}
+
                     </li>
                     <li class="nav-item active">
                         <a class="nav-link pr-2 text-white" href="{% url 'user:logout' %}">退出系统 <span class="sr-only">(current)</span></a>
@@ -57,20 +58,6 @@
                                     <a href="{% url 'plan_management:plan_applications' %}" class="list-group-item text-sm-center text-dark bg-light">计划申请</a>
                                     <a href="{% url 'plan_management:plan_review' %}" class="list-group-item text-sm-center text-dark bg-light">计划审核</a>
                                     <a href="{% url 'plan_management:plan_summary' %}" class="list-group-item text-sm-center text-dark bg-light">计划汇总</a>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card bg-info">
-                            <div class="card-header text-center py-2 px-1" id="headingTwo">
-                                <button class="btn btn-info collapsed py-1 px-lg-5" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    采购管理
-                                </button>
-                            </div>
-                            <div id="collapseTwo" class="collapse {% block two_show %}{% endblock %}" aria-labelledby="headingTwo" data-parent="#accordion">
-                                <ul class="list-group list-group-flush">
-                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Cras justo odio</a>
-                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Dapibus ac facilisis in</a>
-                                    <a href="" class="list-group-item text-sm-center text-dark bg-light">Vestibulum at eros</a>
                                 </ul>
                             </div>
                         </div>

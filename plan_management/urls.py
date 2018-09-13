@@ -14,4 +14,8 @@ urlpatterns = [
     path('plan_delete/',views.plan_delete,name='plan_delete'),
     path('plan_submit/',views.plan_submit,name='plan_submit'),
     path('review_page/<int:plan_pk>',views.review_page,name='review_page'),
+    path('view_review/<int:plan_pk>',views.view_review,name='view_review'),
+    path('department_not_pass/',views.department_not_pass,name='department_not_pass'),
+    path('department_pass/',views.department_pass,name='department_pass'),
+    path('add_plan_summary/',views.add_plan_summary,name='add_plan_summary'),
 ]

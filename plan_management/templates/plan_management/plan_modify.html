@@ -8,13 +8,34 @@
 {% endblock %}
 {% block plan_show %}show{% endblock %}
 {% block content %}
-    <div class="card">
-        <div class="card-header bg-info text-white">
-            修改计划申请
-            <a href="{% url 'plan_management:plan_applications' %}" class="btn btn-light float-right" title="返回上一页">
-                <i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i>
-            </a>
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link active text-light bg-info" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_review' %}">计划审核</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
+        </li>
+    </ul>
+
+    <div class="container-fluid">
+        <div class="row bg-info">
+            <div class="col-md-2 text-justify">
+                <div class="mt-3 mb-3">
+                    <h6 class="text-white font-weight-normal">修改计划申请</h6>
+                </div>
+            </div>
+            <div class="col-md-2 offset-md-8">
+                <a href="{% url 'plan_management:plan_applications' %}" class="btn btn-light float-right mt-1" title="返回上一页">
+                    <i class="fa fa-arrow-left fa-lg text-info" aria-hidden="true"></i>
+                </a>
+            </div>
         </div>
+    </div>
+
+    <div class="card">
         <div class="card-body">
             <form id="plan-form" action="#" method="post">
                 {% csrf_token %}
@@ -44,6 +65,10 @@
                         {{ form.assets }}
                     </div>
                     <div class="col-md-6">
+                        {% if not plan.application_status.pk == 1 %}
+                            <label for="">审核意见</label>
+                            <input class="form-control" type="text" readonly value="{{ review_content }}">
+                        {% endif %}
                         <div class="alert float-right" role="alert">
                             <sapn class="error_message"></sapn>
                         </div>
@@ -77,7 +102,7 @@
         })
         $('#plan-form').submit(function () {
             $('.error_message').text('');
-            $('.alert').removeClass('alert-danger')
+            $('.alert').removeClass('alert-danger');
             $.ajax({
                 url:'{% url 'plan_management:plan_modify_interface' plan.pk %}',
                 type:'POST',

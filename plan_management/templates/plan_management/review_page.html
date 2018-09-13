@@ -7,13 +7,33 @@
 {% endblock %}
 {% block plan_show %}show{% endblock %}
 {% block content %}
-    <div class="card">
-        <div class="card-header bg-info text-white">
-            部门审核
-            <a href="{% url 'plan_management:plan_review' %}" class="btn btn-light float-right" title="返回上一页">
-                <i class="fa fa-arrow-left fa-lg" aria-hidden="true"></i>
-            </a>
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light bg-info active" href="{% url 'plan_management:plan_review' %}">计划审核</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
+        </li>
+    </ul>
+
+    <div class="container-fluid">
+        <div class="row bg-info">
+            <div class="col-md-2 text-justify">
+                <div class="mt-3 mb-3">
+                    <h6 class="text-white font-weight-normal">部门审核</h6>
+                </div>
+            </div>
+            <div class="col-md-2 offset-md-8">
+                <a href="{% url 'plan_management:plan_review' %}" class="btn btn-light float-right mt-1" title="返回上一页">
+                    <i class="fa fa-arrow-left fa-lg text-info" aria-hidden="true"></i>
+                </a>
+            </div>
         </div>
+    </div>
+    <div class="card">
         <div class="card-body">
             <div class="form-group row">
                 <div class="col">
@@ -43,26 +63,31 @@
                     {% endfor %}
                 </div>
                 <div class="col-md-6">
-                    <form id="review-form" action="#" method="post">
-
+                    <form id="review-form" action="" method="post">
+                        <label for="{{ department_review_form.review_content.id_for_label }}">审核意见</label>
+                        {{ department_review_form.review_content }}
+                        {{ department_review_form.reviewer }}
+                        {{ department_review_form.content_type }}
+                        {{ department_review_form.object_id }}
+                        <div class="alert float-left mt-3" role="alert">
+                                <sapn class="error_message"></sapn>
+                        </div>
+                        <div class="mt-4 float-right">
+                            <button id="review_pass" class="btn btn-info" type="button">通过</button>
+                            <button id="review_notpass" class="btn btn-info" type="button">不通过</button>
+                        </div>
                     </form>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="alert float-right" role="alert">
-                    <sapn class="error_message"></sapn>
-                </div>
-                <input class="btn btn-info float-right" type="submit" value="不通过">
-                <input class="btn btn-info float-right" type="submit" value="通过">
-            </div>
         </div>
     </div>
+
     <!-- Modal -->
-    <div class="modal fade bd-example-modal-sm" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade bd-example-modal-sm" id="ReviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
           <div class="modal-body text-center text-success">
-            修改成功
+            审核成功
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-info" data-dismiss="modal">关闭</button>
@@ -70,4 +95,82 @@
         </div>
       </div>
     </div>
+{% endblock %}
+
+{% block script_extends %}
+    <script>
+        // 模态框关闭后返回审核列表界面
+        $('#ReviewModal').on('hidden.bs.modal', function () {
+            window.location.href='{% url 'plan_management:plan_review' %}'
+        })
+        //当采用非form表单（$('#form).submit()）的ajax请求方式时需要加这一句手动加上csrf验证码
+        $.ajaxSetup({headers: {"X-CSRFToken": '{{ csrf_token }}'}});
+        $('#review_notpass').click(function () {
+            var reviewer = $('#id_reviewer').attr('value')
+            var content_type = $('#id_content_type').attr('value')
+            var object_id = $('#id_object_id').attr('value')
+            var review_content = $('#id_review_content').val()
+            $('.error_message').text('');
+            $('.alert').removeClass('alert-danger');
+            $.ajax({
+                url:"{% url 'plan_management:department_not_pass' %}",
+                type:'POST',
+                cache:false,
+                data:{
+                    reviewer:reviewer,
+                    content_type:content_type,
+                    object_id:object_id,
+                    review_content:review_content
+                },
+                success:function (data) {
+                    if (data['status']=='SUCCESS'){
+                        console.log(data)
+                        $('#ReviewModal').modal();
+                    }
+                    if (data['status']=='ERROR'){
+                        console.log(data)
+                        $('.alert').addClass('alert-danger');
+                        $('.error_message').text(data['message'])
+                    }
+                },
+                error:function (xhr) {
+                    console.log(xhr)
+                }
+            })
+        })
+
+        $('#review_pass').click(function () {
+            var reviewer = $('#id_reviewer').attr('value')
+            var content_type = $('#id_content_type').attr('value')
+            var object_id = $('#id_object_id').attr('value')
+            var review_content = $('#id_review_content').val()
+            $('.error_message').text('');
+            $('.alert').removeClass('alert-danger');
+            $.ajax({
+                url:"{% url 'plan_management:department_pass' %}",
+                type:'POST',
+                cache:false,
+                data:{
+                    reviewer:reviewer,
+                    content_type:content_type,
+                    object_id:object_id,
+                    review_content:review_content
+                },
+                success:function (data) {
+                    if (data['status']=='SUCCESS'){
+                        console.log(data)
+                        $('#ReviewModal').modal();
+                    }
+                    if (data['status']=='ERROR'){
+                        console.log(data)
+                        $('.alert').addClass('alert-danger');
+                        $('.error_message').text(data['message'])
+                    }
+                },
+                error:function (xhr) {
+                    console.log(xhr)
+                }
+            })
+        })
+    </script>
 {% endblock %}

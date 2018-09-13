@@ -2,17 +2,16 @@
 {% load staticfiles %}
 {% block title %}查看详情{% endblock %}
 {% block head_extends %}
-    <link rel="stylesheet" href="{% static 'plan_management/css/view_plan.css' %}">
     <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
 {% endblock %}
 {% block plan_show %}show{% endblock %}
 {% block content %}
     <ul class="nav">
         <li class="nav-item">
-            <a class="nav-link text-light bg-info" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" href="{% url 'plan_management:plan_review' %}">计划审核</a>
+            <a class="nav-link text-light bg-info" href="{% url 'plan_management:plan_review' %}">计划审核</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-dark" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
@@ -27,7 +26,7 @@
                 </div>
             </div>
             <div class="col-md-2 offset-md-8">
-                <a href="{% url 'plan_management:plan_applications' %}" class="btn btn-light float-right mt-1" title="返回上一页">
+                <a href="{% url 'plan_management:plan_review' %}" class="btn btn-light float-right mt-1" title="返回上一页">
                     <i class="fa fa-arrow-left fa-lg text-info" aria-hidden="true"></i>
                 </a>
             </div>

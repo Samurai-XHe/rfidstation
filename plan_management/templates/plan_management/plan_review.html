@@ -7,23 +7,23 @@
 {% endblock %}
 {% block plan_show %}show{% endblock %}
 {% block content %}
-    <ul class="nav nav-tabs">
+    <ul class="nav">
         <li class="nav-item">
             <a class="nav-link text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark active" href="{% url 'plan_management:plan_review' %}">计划审核</a>
+            <a class="nav-link text-light bg-info active" href="{% url 'plan_management:plan_review' %}">计划审核</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-dark" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
         </li>
     </ul>
 
-    <div class="container-fluid mt-2">
+    <div class="container-fluid">
         <div class="row bg-info">
             <div class="col-md-2 text-justify">
-                <div class="mt-2">
-                    <h6 class="mb-2 text-white font-weight-normal">{{ user.get_department }}</h6>
+                <div class="mb-3 mt-3">
+                    <h6 class="text-white font-weight-normal">{{ user.get_department }}</h6>
                 </div>
             </div>
             <div class="col-md-2 offset-md-8">
@@ -48,19 +48,27 @@
         <tbody>
             {% for plan in plan_list %}
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ plan.department.department_name }}</td>
-                    <td>{{ plan.user.profile.nickname }}</td>
-                    <td>{{ plan.year }}</td>
-                    <td>{{ plan.date_of_application }}</td>
-                    <td>{{ plan.application_status.status }}</td>
-                    <td>
+                    <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                    <td class="align-middle">{{ plan.department.department_name }}</td>
+                    <td class="align-middle">{{ plan.user.profile.nickname }}</td>
+                    <td class="align-middle">{{ plan.year }}</td>
+                    <td class="align-middle">{{ plan.date_of_application }}</td>
+                    <td class="align-middle">{{ plan.application_status.status }}</td>
+                    <td class="align-middle">
                         {% for foo in plan.operator.all %}
                             {{ foo.profile.nickname }}
                         {% endfor %}
                     </td>
-                    <td>
-                        <a href="{% url 'plan_management:review_page' plan.pk %}" class="btn btn-info">审核</a>
+                    <td class="align-middle">
+                        {% if perms.review.change_departmentreview %}
+                            {% if plan.application_status.pk == 3 %}
+                                <a href="{% url 'plan_management:view_review' plan.pk %}" class="btn btn-info">查看</a>
+                            {% else %}
+                                <a href="{% url 'plan_management:review_page' plan.pk %}" class="btn btn-info">审核</a>
+                            {% endif %}
+                        {% else %}
+                            <button class="btn btn-info">您无权审核</button>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
