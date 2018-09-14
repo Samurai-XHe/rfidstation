@@ -91,3 +91,28 @@ class PlanapplicationsForm(forms.Form):
         if assets == '' or not aassets_true:
             raise forms.ValidationError('请选择<资产>')
         return assets
+
+class PlanSummaryForm(forms.Form):
+    project_name = forms.CharField(
+        label='计划书名称',
+        max_length= 20,
+        widget=forms.TextInput(attrs={'class':'form-control'}),
+        error_messages={
+            'required':'计划书名称不能为空',
+            'max_length':'不得超过20个字符'
+        }
+    )
+    year = forms.CharField(
+        label='年度',
+        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'id': 'date_input', 'readonly': ''}),
+        error_messages={
+            'required': '<年度>不能为空!',
+        },
+    )
+    def clean_year(self):
+        year = self.cleaned_data.get('year','')
+        if year == '' or len(year) > 4:
+            raise forms.ValidationError('<年度>错误')
+        else:
+            return year
+

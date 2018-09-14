@@ -5,7 +5,7 @@ class Department(models.Model):
     order = models.IntegerField('次序')
 
     def __str__(self):
-        return '<assets:%s>' % self.department_name
+        return '<department:%s>' % self.department_name
 
     class Meta():
         verbose_name_plural = '部门管理'

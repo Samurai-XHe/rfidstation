@@ -145,8 +145,8 @@
 
     // 点击提交时给提交键添加class：submit，好让提交ajax时找到计划的plan_pk
         function submit_plan(obj){
-            $('#SubmitModal').modal();
             $(obj).addClass('submit');
+            $('#SubmitModal').modal();
         }
     // ajax提交请求，通过则提交数据并刷新页面
     //当采用非form表单（$('#form).submit()）的ajax请求方式时需要加这一句手动加上csrf验证码

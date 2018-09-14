@@ -26,7 +26,7 @@ class SummaryStatus(models.Model):
 class Plan_Summary(models.Model):
     project_name = models.CharField(verbose_name='项目名称', max_length=20)
     year = models.IntegerField(verbose_name='年度')
-    summary_status = models.ForeignKey(SummaryStatus,on_delete=models.CASCADE,verbose_name='计划书状态')
+    summary_status = models.ForeignKey(SummaryStatus,on_delete=models.CASCADE,verbose_name='计划书状态',null=True)
     def __str__(self):
         return '<plan_summary:%s>' % self.project_name
 

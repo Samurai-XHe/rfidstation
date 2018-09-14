@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}修改计划申请{% endblock %}
+{% block title %}添加计划书{% endblock %}
 {% block head_extends %}
-    <link rel="stylesheet" href="{% static 'plan_management/css/plan_modify.css' %}">
     <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css' %}">
 {% endblock %}
@@ -10,13 +9,13 @@
 {% block content %}
     <ul class="nav">
         <li class="nav-item">
-            <a class="nav-link text-light bg-info" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-dark" href="{% url 'plan_management:plan_review' %}">计划审核</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
+            <a class="nav-link text-light bg-info" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
         </li>
     </ul>
 
@@ -24,11 +23,11 @@
         <div class="row bg-info">
             <div class="col-md-2 text-justify">
                 <div class="mt-3 mb-3">
-                    <h6 class="text-white font-weight-normal">修改计划申请</h6>
+                    <h6 class="text-white font-weight-normal">添加计划书</h6>
                 </div>
             </div>
             <div class="col-md-2 offset-md-8">
-                <a href="{% url 'plan_management:plan_applications' %}" class="btn btn-light float-right mt-1" title="返回上一页">
+                <a href="{% url 'plan_management:plan_summary' %}" class="btn btn-light float-right mt-1" title="返回上一页">
                     <i class="fa fa-arrow-left fa-lg text-info" aria-hidden="true"></i>
                 </a>
             </div>
@@ -37,44 +36,26 @@
 
     <div class="card">
         <div class="card-body">
-            <form id="plan-form" action="#" method="post">
+            <form id="plan_summary_form" action="#" method="post">
                 {% csrf_token %}
                 <div class="form-group row">
                     <div class="col">
-                        <label for="{{ form.department.id_for_label }}">申报部门 <span>{{ form.department.errors }}</span></label>
-                        {{ form.department }}
+                        <label for="{{ form.project_name.id_for_label }}">计划书名称 </label>
+                        {{ form.project_name }}
                     </div>
                     <div class="col">
-                        <label for="{{ form.user.id_for_label }}">申报人</label>
-                        {{ form.user }}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col">
-                        <label for="{{ form.year.id_for_label }}">年度 <span>{{ form.year.errors }}</span></label>
+                        <label for="{{ form.year.id_for_label }}">年度 </label>
                         {{ form.year }}
                     </div>
-                    <div class="col">
-                        <label for="{{ form.date_of_application.id_for_label }}">申请日期</label>
-                        {{ form.date_of_application }}
-                    </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
-                        <label for="{{ form.assets.id_for_label }}">资产</label>
-                        {{ form.assets }}
-                    </div>
-                    <div class="col-md-6">
-                        {% if not plan.application_status.pk == 1 %}
-                            <label for="">审核意见</label>
-                            <input class="form-control" type="text" readonly value="{{ review_content }}">
-                        {% endif %}
                         <div class="alert float-right" role="alert">
                             <sapn class="error_message"></sapn>
                         </div>
                     </div>
                 </div>
-                <input class="btn btn-info float-right" type="submit" value="修改">
+                <input class="btn btn-info float-right" type="submit" value="提交">
             </form>
 
         </div>
@@ -84,7 +65,7 @@
       <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
           <div class="modal-body text-center text-success">
-            修改成功
+            添加成功
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-info" data-dismiss="modal">关闭</button>
@@ -97,14 +78,15 @@
     <script src="{% static 'bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
     <script src="{% static 'bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
     <script>
+        // 模态框关闭后返回计划计划书列表界面
         $('#exampleModal').on('hidden.bs.modal', function () {
-            window.location.href='{% url 'plan_management:plan_applications' %}'
-        })
-        $('#plan-form').submit(function () {
+            window.location.href='{% url 'plan_management:plan_summary' %}'
+        });
+        $('#plan_summary_form').submit(function () {
             $('.error_message').text('');
             $('.alert').removeClass('alert-danger');
             $.ajax({
-                url:'{% url 'plan_management:plan_modify_interface' plan.pk %}',
+                url:'{% url 'plan_management:add_plan_summary_interface' %}',
                 type:'POST',
                 data:$(this).serialize(),
                 cache:false,
@@ -133,16 +115,6 @@
             todayBtn: true,
             startView: 4,
             minView:4,
-            language: 'zh-CN',
-            pickerPosition: "bottom-left",
-        });
-        $("#date_time_input").datetimepicker({
-            format: "yyyy-mm-dd",
-            showMeridian: true,
-            autoclose: true,
-            todayBtn: true,
-            startView: 4,
-            minView:2,
             language: 'zh-CN',
             pickerPosition: "bottom-left",
         });

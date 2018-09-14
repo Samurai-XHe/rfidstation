@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
-from .forms import PlanapplicationsForm
+from .forms import PlanapplicationsForm,PlanSummaryForm
 from .models import Department,Assets,Plan,ApplicationStatus,SummaryStatus,Plan_Summary
 from review.forms import DepartmentForm
 from review.models import DepartmentReview
@@ -299,4 +299,95 @@ def department_pass(request):
 
 @login_required
 def add_plan_summary(request):
-    pass  ##########################先做添加功能#################################
+    form = PlanSummaryForm()
+    context = {}
+    context['form'] = form
+    return render(request, 'plan_management/add_plan_summary.html', context)
+
+@login_required
+def add_plan_summary_interface(request):
+    form = PlanSummaryForm(request.POST)
+    data = {}
+    if form.is_valid():
+        project_name = form.cleaned_data['project_name']
+        year = form.cleaned_data['year']
+        status = SummaryStatus.objects.get(pk=1)
+        summary = Plan_Summary()
+        summary.project_name = project_name
+        summary.year = year
+        summary.summary_status = status
+        summary.save()
+        data['status'] = 'SUCCESS'
+        return JsonResponse(data)
+    else:
+        data['status'] = 'ERROR'
+        data['message'] = list(form.errors.values())
+        return JsonResponse(data)
+
+@login_required
+def view_summary(request,summary_pk):
+    try:
+        plan_pk = int(summary_pk)
+        summary = Plan_Summary.objects.get(pk=summary_pk)
+    except Exception as e:
+        return redirect(reverse('index'))
+    context = {}
+    context['summary'] = summary
+    return render(request,'plan_management/view_summary.html',context)
+
+@login_required
+def summary_delete(request):
+    user = request.user
+    try:
+        summary_pk = int(request.GET.get('summary_pk'))
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': '该计划不存在'})
+    data = {}
+    if user.has_perm('plan_management.delete_plan_summary') and Plan_Summary.objects.filter(pk=summary_pk).exists():
+        summary = Plan_Summary.objects.get(pk=summary_pk)
+        summary.delete()
+        data['status'] = 'SUCCESS'
+        return JsonResponse(data)
+    else:
+        data['status'] = 'ERROR'
+        data['message'] = '无权限或无计划书'
+        return JsonResponse(data)
+
+@login_required
+def summary_modify(request,summary_pk):
+    try:
+        summary_pk = int(summary_pk)
+        summary = Plan_Summary.objects.get(pk=summary_pk)
+    except Plan.DoesNotExist as e:
+        return redirect(reverse('index'))
+    form = PlanSummaryForm(
+        initial={
+            'project_name': summary.project_name,
+            'year':summary.year,
+            'year':summary.year,
+        },
+    )
+    context = {}
+    context['summary'] = summary
+    context['form'] = form
+    return render(request,'plan_management/summary_modify.html',context)
+
+@login_required
+def summary_modify_interface(request,summary_pk):
+    form = PlanSummaryForm(request.POST)
+    data = {}
+    if form.is_valid():
+        project_name = form.cleaned_data['project_name']
+        year = form.cleaned_data['year']
+        status = SummaryStatus.objects.get(pk=1)
+        summary = Plan_Summary.objects.get(pk=summary_pk)
+        summary.year = year
+        summary.project_name = project_name
+        summary.summary_status = status
+        summary.save()
+        data['status'] = 'SUCCESS'
+        return JsonResponse(data)
+    else:
+        data['status'] = 'ERROR'
+        data['message'] = list(form.errors.values())
+        return JsonResponse(data)

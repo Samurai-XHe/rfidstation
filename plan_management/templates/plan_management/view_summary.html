@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}计划书详情{% endblock %}
+{% block head_extends %}
+    <link rel="stylesheet" href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}">
+{% endblock %}
+{% block plan_show %}show{% endblock %}
+{% block content %}
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_applications' %}">计划申请</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" href="{% url 'plan_management:plan_review' %}">计划审核</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light bg-info" href="{% url 'plan_management:plan_summary' %}">计划汇总</a>
+        </li>
+    </ul>
+
+    <div class="container-fluid">
+        <div class="row bg-info">
+            <div class="col-md-2 text-justify">
+                <div class="mt-3 mb-3">
+                    <h6 class="text-white font-weight-normal">计划书详情</h6>
+                </div>
+            </div>
+            <div class="col-md-2 offset-md-8">
+                <a href="{% url 'plan_management:plan_summary' %}" class="btn btn-light float-right mt-1" title="返回上一页">
+                    <i class="fa fa-arrow-left fa-lg text-info" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="form-group row">
+                <div class="col">
+                    <label for="">计划书名称</label>
+                    <input class="form-control" type="text" readonly value="{{ summary.project_name }}">
+                </div>
+                <div class="col">
+                    <label for="">年度</label>
+                    <input class="form-control" type="text" readonly value="{{ summary.year }}">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label for="">计划</label>
+                    {% for ass in plan.assets.all %}
+                        <input class="form-control" type="text" readonly value="{{ ass.assets_name }}">
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script_extends %}
+    <script src="{% static 'bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+    <script>
+    </script>
+{% endblock %}

@@ -57,12 +57,12 @@
                             操作
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="">查看</a>
+                            <a class="dropdown-item" href="{% url 'plan_management:view_summary' summary.pk %}">查看</a>
                             {% if perms.plan_management.change_plan_summary %}
-                                <a class="dropdown-item" href="">修改</a>
+                                <a class="dropdown-item" href="{% url 'plan_management:summary_modify' summary.pk %}">修改</a>
                             {% endif %}
                             {% if perms.plan_management.delete_plan_summary %}
-                                <a class="dropdown-item" onclick="" href="javascript:void(0)">删除</a>
+                                <a class="dropdown-item" onclick="delete_summary(this)" href="javascript:void(0)" summary_pk="{{ summary.pk }}">删除</a>
                             {% endif %}
                         <a class="dropdown-item" href="">打印</a>
                         <a class="dropdown-item" href="">下载</a>
@@ -70,9 +70,51 @@
                     </div>
                 </td>
             </tr>
-        {% empty %}
-            暂无
         {% endfor %}
         </tbody>
     </table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            确认要删除该计划书？
+          </div>
+          <div class="modal-footer">
+              <button id="delete_yes" type="button" class="btn btn-danger" data-dismiss="modal">确认</button>
+            <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block script_extends %}
+    <script>
+        function delete_summary(obj) {
+            $(obj).addClass('submit');
+            $('#DeleteModal').modal();
+        }
+        $('#delete_yes').click(function () {
+            var summary_pk  = $('.submit').attr('summary_pk');
+            $.ajax({
+                url:"{% url 'plan_management:summary_delete' %}",
+                type:'GET',
+                cache:false,
+                data:{
+                    summary_pk:summary_pk
+                },
+                success:function (data) {
+                    console.log(data);
+                    if (data['status'] == 'SUCCESS'){
+                        window.location.reload();
+                    }
+                },
+                error:function (xhr) {
+                    console.log(xhr)
+                }
+            })
+        })
+    </script>
 {% endblock %}
