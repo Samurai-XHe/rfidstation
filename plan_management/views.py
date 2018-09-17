@@ -1,4 +1,5 @@
 import datetime
+import logging
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -10,6 +11,9 @@ from .forms import PlanapplicationsForm,PlanSummaryForm
 from .models import Department,Assets,Plan,ApplicationStatus,SummaryStatus,Plan_Summary
 from review.forms import DepartmentForm
 from review.models import DepartmentReview
+
+logger = logging.getLogger("django")
+
 
 @login_required
 def plan_applications(request):
@@ -300,13 +304,17 @@ def department_pass(request):
 @login_required
 def add_plan_summary(request):
     form = PlanSummaryForm()
+    plan_list = Plan.objects.filter(application_status_id=3,plan_summary=None)
     context = {}
     context['form'] = form
+    context['plan_list'] = plan_list
     return render(request, 'plan_management/add_plan_summary.html', context)
 
 @login_required
 def add_plan_summary_interface(request):
     form = PlanSummaryForm(request.POST)
+    plan_list = request.POST.getlist('plan_pk','')
+    print(plan_list,'------------------------')
     data = {}
     if form.is_valid():
         project_name = form.cleaned_data['project_name']
@@ -317,6 +325,10 @@ def add_plan_summary_interface(request):
         summary.year = year
         summary.summary_status = status
         summary.save()
+        for planid in plan_list:
+            plan = Plan.objects.get(pk=planid)
+            plan.plan_summary = summary
+            plan.save()
         data['status'] = 'SUCCESS'
         return JsonResponse(data)
     else:
@@ -325,7 +337,7 @@ def add_plan_summary_interface(request):
         return JsonResponse(data)
 
 @login_required
-def view_summary(request,summary_pk):
+def view_summary(request,summary_pk):       #################从这里做##################
     try:
         plan_pk = int(summary_pk)
         summary = Plan_Summary.objects.get(pk=summary_pk)
