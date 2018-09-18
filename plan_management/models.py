@@ -41,7 +41,7 @@ class Plan(models.Model):
     application_status = models.ForeignKey(ApplicationStatus,on_delete=models.CASCADE,verbose_name='申请状态')
     operator = models.ManyToManyField(User,related_name='plan_operator',verbose_name='操作人',null=True)
     assets = models.ManyToManyField(Assets,verbose_name='资产')
-    plan_summary = models.ForeignKey(Plan_Summary,on_delete=models.CASCADE,verbose_name='所属计划书',null=True)
+    plan_summary = models.ForeignKey(Plan_Summary,on_delete=models.DO_NOTHING,verbose_name='所属计划书',null=True)
 
     review_content = GenericRelation(DepartmentReview,related_query_name='plan')
 

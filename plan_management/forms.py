@@ -1,7 +1,8 @@
-import datetime
 from django import forms
+from django.forms import fields,widgets
 from django.contrib.auth.models import User
-from .models import Department
+from django.db.models import Q
+from .models import Department,Plan
 from .models import Assets
 
 class PlanapplicationsForm(forms.Form):
@@ -109,6 +110,7 @@ class PlanSummaryForm(forms.Form):
             'required': '<年度>不能为空!',
         },
     )
+
     def clean_year(self):
         year = self.cleaned_data.get('year','')
         if year == '' or len(year) > 4:

@@ -136,6 +136,7 @@ STATICFILES_DIRS = [
 
 
 # 日志系统配置
+'''
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -178,3 +179,4 @@ LOGGING = {
 
     }
 }
+'''

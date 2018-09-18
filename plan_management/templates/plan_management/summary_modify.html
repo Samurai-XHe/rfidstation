@@ -48,6 +48,45 @@
                         {{ form.year }}
                     </div>
                 </div>
+                <div class="form-group row mt-5">
+                    <div class="col">
+                        <table class="table table-sm table-striped table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        <input id="all" type="checkbox">
+                                    </th>
+                                    <th scope="col">序号</th>
+                                    <th scope="col">申报部门</th>
+                                    <th scope="col">申报人</th>
+                                    <th scope="col">年度</th>
+                                    <th scope="col">申请日期</th>
+                                    <th scope="col">申请状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for plan in plan_list %}
+                                    <tr>
+                                        <th class="align-middle" scope="row">
+                                            <input id="check" type="checkbox" name="plan_pk" value="{{ plan.pk }}">
+                                        </th>
+                                        <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                                        <td class="align-middle">{{ plan.department.department_name }}</td>
+                                        <td class="align-middle">{{ plan.user.profile.nickname }}</td>
+                                        <td class="align-middle">{{ plan.year }}</td>
+                                        <td class="align-middle">{{ plan.date_of_application }}</td>
+                                        <td class="align-middle">{{ plan.application_status.status }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="d-none">
+                    {% for plan in chirden_plans %}
+                    <span>{{ plan.id }}</span>
+                {% endfor %}
+                </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         <div class="alert float-right" role="alert">
@@ -78,6 +117,8 @@
     <script src="{% static 'bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
     <script src="{% static 'bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
     <script>
+        $('.d-none').
+
         $('#exampleModal').on('hidden.bs.modal', function () {
             window.location.href='{% url 'plan_management:plan_summary' %}'
         })

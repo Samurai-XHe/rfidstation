@@ -1,5 +1,4 @@
 import datetime
-import logging
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -11,8 +10,6 @@ from .forms import PlanapplicationsForm,PlanSummaryForm
 from .models import Department,Assets,Plan,ApplicationStatus,SummaryStatus,Plan_Summary
 from review.forms import DepartmentForm
 from review.models import DepartmentReview
-
-logger = logging.getLogger("django")
 
 
 @login_required
@@ -314,7 +311,6 @@ def add_plan_summary(request):
 def add_plan_summary_interface(request):
     form = PlanSummaryForm(request.POST)
     plan_list = request.POST.getlist('plan_pk','')
-    print(plan_list,'------------------------')
     data = {}
     if form.is_valid():
         project_name = form.cleaned_data['project_name']
@@ -339,12 +335,14 @@ def add_plan_summary_interface(request):
 @login_required
 def view_summary(request,summary_pk):       #################从这里做##################
     try:
-        plan_pk = int(summary_pk)
+        summary_pk = int(summary_pk)
         summary = Plan_Summary.objects.get(pk=summary_pk)
+        plan_list = Plan.objects.filter(plan_summary=summary)
     except Exception as e:
         return redirect(reverse('index'))
     context = {}
     context['summary'] = summary
+    context['plan_list'] = plan_list
     return render(request,'plan_management/view_summary.html',context)
 
 @login_required
@@ -357,6 +355,8 @@ def summary_delete(request):
     data = {}
     if user.has_perm('plan_management.delete_plan_summary') and Plan_Summary.objects.filter(pk=summary_pk).exists():
         summary = Plan_Summary.objects.get(pk=summary_pk)
+        plan_list = Plan.objects.filter(plan_summary=summary)
+        plan_list.update(plan_summary='')
         summary.delete()
         data['status'] = 'SUCCESS'
         return JsonResponse(data)
@@ -366,22 +366,24 @@ def summary_delete(request):
         return JsonResponse(data)
 
 @login_required
-def summary_modify(request,summary_pk):
+def summary_modify(request,summary_pk):      #############zhelikaishi############
     try:
         summary_pk = int(summary_pk)
         summary = Plan_Summary.objects.get(pk=summary_pk)
+        chirden_plans = list(Plan.objects.filter(plan_summary=summary).values('id'))
+        plan_list = Plan.objects.filter(Q(plan_summary=None) | Q(plan_summary=summary), application_status_id=3)
     except Plan.DoesNotExist as e:
         return redirect(reverse('index'))
     form = PlanSummaryForm(
         initial={
             'project_name': summary.project_name,
             'year':summary.year,
-            'year':summary.year,
         },
     )
     context = {}
     context['summary'] = summary
     context['form'] = form
+    context['plan_list'] = plan_list
     return render(request,'plan_management/summary_modify.html',context)
 
 @login_required
@@ -389,6 +391,7 @@ def summary_modify_interface(request,summary_pk):
     form = PlanSummaryForm(request.POST)
     data = {}
     if form.is_valid():
+        plan_list = request.POST.getlist('plan_pk', '')
         project_name = form.cleaned_data['project_name']
         year = form.cleaned_data['year']
         status = SummaryStatus.objects.get(pk=1)
@@ -397,6 +400,12 @@ def summary_modify_interface(request,summary_pk):
         summary.project_name = project_name
         summary.summary_status = status
         summary.save()
+        old_plan_list = Plan.objects.filter(plan_summary=summary)
+        old_plan_list.update(plan_summary='')
+        for planid in plan_list:
+            plan = Plan.objects.get(pk=planid)
+            plan.plan_summary = summary
+            plan.save()
         data['status'] = 'SUCCESS'
         return JsonResponse(data)
     else:
