@@ -122,7 +122,6 @@
                 }
             }
         );
-
         // 模态框关闭后返回计划计划书列表界面
         $('#exampleModal').on('hidden.bs.modal', function () {
             window.location.href='{% url 'plan_management:plan_summary' %}'
@@ -130,7 +129,6 @@
         $('#plan_summary_form').submit(function () {
             $('.error_message').text('');
             $('.alert').removeClass('alert-danger');
-            console.log($(this).serialize());
             $.ajax({
                 url:'{% url 'plan_management:add_plan_summary_interface' %}',
                 type:'POST',

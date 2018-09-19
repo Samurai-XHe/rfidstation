@@ -64,8 +64,8 @@
                             {% if perms.plan_management.delete_plan_summary %}
                                 <a class="dropdown-item" onclick="delete_summary(this)" href="javascript:void(0)" summary_pk="{{ summary.pk }}">删除</a>
                             {% endif %}
-                        <a class="dropdown-item" href="">打印</a>
-                        <a class="dropdown-item" href="">下载</a>
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="print_plan(this)" summary_pk="{{ summary.pk }}">打印</a>
+                        <a class="dropdown-item" href="{% url 'plan_management:summary_download' summary.pk %}">下载</a>
                         </div>
                     </div>
                 </td>
@@ -88,10 +88,95 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="PrintModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+              <div id="printcard" class="card">
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col">
+                            <label for="">计划书名称</label>
+                            <input id="summary_name" class="form-control" type="text" readonly value="">
+                        </div>
+                        <div class="col">
+                            <label for="">年度</label>
+                            <input id="summary_year" class="form-control" type="text" readonly value="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="">计划</label>
+                            <table class="table table-sm table-striped table-bordered text-center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">序号</th>
+                                        <th scope="col">申报部门</th>
+                                        <th scope="col">申报人</th>
+                                        <th scope="col">年度</th>
+                                        <th scope="col">申请日期</th>
+                                        <th scope="col">申请状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for plan in plan_list %}
+                                        <tr>
+                                            <th class="align-middle" scope="row">{{ forloop.counter }}</th>
+                                            <td class="align-middle">{{ plan.department.department_name }}</td>
+                                            <td class="align-middle">{{ plan.user.profile.nickname }}</td>
+                                            <td class="align-middle">{{ plan.year }}</td>
+                                            <td class="align-middle">{{ plan.date_of_application }}</td>
+                                            <td class="align-middle">{{ plan.application_status.status }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button id="print" type="button" class="btn btn-primary" data-dismiss="modal">打印</button>
+            <button type="button" class="btn btn-info" data-dismiss="modal">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
 {% endblock %}
 
 {% block script_extends %}
+    <script src="{% static 'js/jquery.print.js' %}"></script>
     <script>
+        // 打印计划书
+        function print_plan(obj) {
+            var summary_pk = $(obj).attr('summary_pk');
+            $.ajax({
+                url:"{% url 'plan_management:print_summary'%}",
+                type:'GET',
+                cache:false,
+                data:{
+                    summary_pk:summary_pk
+                },
+                success:function (data) {
+                    console.log(data);
+                    if (data['status'] == 'SUCCESS'){
+                        $('#summary_name').attr('value',data['summary_name']);
+                        $('#summary_year').attr('value',data['summary_year'])
+                    }
+                },
+                error:function (xhr) {
+                    console.log(xhr)
+                }
+            });
+            $('#PrintModal').modal();
+        }
+        $('#print').click(function () {
+            $('#printcard').print();
+        });
+
         function delete_summary(obj) {
             $(obj).addClass('submit');
             $('#DeleteModal').modal();

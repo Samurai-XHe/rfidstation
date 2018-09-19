@@ -44,7 +44,6 @@ class Plan(models.Model):
     plan_summary = models.ForeignKey(Plan_Summary,on_delete=models.DO_NOTHING,verbose_name='所属计划书',null=True)
 
     review_content = GenericRelation(DepartmentReview,related_query_name='plan')
-
     def __str__(self):
         return '<plan:%s for %s>' % (self.department,self.date_of_application)
 

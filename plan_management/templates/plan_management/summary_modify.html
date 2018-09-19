@@ -82,11 +82,6 @@
                         </table>
                     </div>
                 </div>
-                <div class="d-none">
-                    {% for plan in chirden_plans %}
-                    <span>{{ plan.id }}</span>
-                {% endfor %}
-                </div>
                 <div class="form-group row">
                     <div class="col-md-6">
                         <div class="alert float-right" role="alert">
@@ -117,8 +112,6 @@
     <script src="{% static 'bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js' %}"></script>
     <script src="{% static 'bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
     <script>
-        $('.d-none').
-
         $('#exampleModal').on('hidden.bs.modal', function () {
             window.location.href='{% url 'plan_management:plan_summary' %}'
         })

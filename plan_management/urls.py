@@ -23,4 +23,6 @@ urlpatterns = [
     path('summary_delete/',views.summary_delete,name='summary_delete'),
     path('summary_modify/<int:summary_pk>/',views.summary_modify,name='summary_modify'),
     path('summary_modify_interface/<int:summary_pk>/',views.summary_modify_interface,name='summary_modify_interface'),
+    path('print_summary/',views.print_summary,name='print_summary'),
+    path('summary_download/<int:summary_pk>/',views.summary_download,name='summary_download'),
 ]

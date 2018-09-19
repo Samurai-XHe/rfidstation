@@ -3,14 +3,15 @@ from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse,FileResponse
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
+from django.utils.encoding import escape_uri_path
 from .forms import PlanapplicationsForm,PlanSummaryForm
 from .models import Department,Assets,Plan,ApplicationStatus,SummaryStatus,Plan_Summary
 from review.forms import DepartmentForm
 from review.models import DepartmentReview
-
+from openpyxl import Workbook
 
 @login_required
 def plan_applications(request):
@@ -412,3 +413,38 @@ def summary_modify_interface(request,summary_pk):
         data['status'] = 'ERROR'
         data['message'] = list(form.errors.values())
         return JsonResponse(data)
+
+@login_required
+def print_summary(request):
+    data = {}
+    summary_pk = request.GET.get('summary_pk','')
+    # 返回summary的所有信息
+    summary = Plan_Summary.objects.get(pk=summary_pk)
+    plans = Plan.objects.filter(plan_summary=summary)
+    data['summary_name'] = summary.project_name
+    data['summary_year'] = summary.year
+    data['status'] = 'SUCCESS'
+    return JsonResponse(data)
+
+@login_required
+def summary_download(request,summary_pk):
+    #  根据summary_pk得到该汇总的所有计划
+    file_name = '计划和汇总.xlsx'
+    plans = list(Plan.objects.filter(plan_summary=summary_pk).values_list(
+        'department__department_name',
+        'user__profile__nickname',
+        'year',
+        'date_of_application',
+    ))
+    # 把这些计划导入excel
+    wb = Workbook()
+    ws = wb.active
+    for plan in plans:
+        ws.append(plan)
+    wb.save('plan_management/static/plan_management/summary_download/%s' % file_name)
+    # 返回下载数据
+    file = open('plan_management/static/plan_management/summary_download/%s' % file_name,'rb')
+    response = FileResponse(file)
+    response['Content-Type']='application/octet-stream'
+    response['Content-Disposition']="attachment;filename*={}".format(escape_uri_path(file_name))
+    return response
